@@ -1,6 +1,8 @@
 import express from "express";
-import { users } from "./fakeDB/fakeUsers.js";
+// import { users } from "./fakeDB/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
+import { connectDB } from "./config/db.js";
+import { connectSupabase } from "./config/supabase.js";
 
 const app = express();
 
@@ -181,6 +183,17 @@ app.use((err, req, res, next) => {
 
 const PORT = 3001;
 
-app.listen(PORT, () => {
-  console.log(`Server running on PORT:${PORT} 🟢`);
-});
+async function start() {
+  try {
+    await connectDB();
+    await connectSupabase();
+    app.listen(PORT, () => {
+      console.log(`Server running on PORT:${PORT} 🟢`);
+    });
+  } catch (err) {
+    console.error("Failed to connect to MongoDB:", err.message);
+    process.exit(1);
+  }
+}
+
+start();

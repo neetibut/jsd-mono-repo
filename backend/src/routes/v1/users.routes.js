@@ -41,8 +41,8 @@ router.post("/", (req, res, next) => {
     users.push(newUser);
 
     return res.status(201).json(newUser);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 });
 
