@@ -1,0 +1,33 @@
+# Supabase / PostgreSQL — Users API (v2)
+# Base: /api/v2/users/pg
+#
+# IDs in Supabase are UUIDs — replace the placeholder below with a real one
+# after running the POST request.
+#
+# @id = paste-a-real-uuid-here
+
+### Read all users (Supabase)
+GET http://localhost:3001/api/v2/users/pg
+
+### Create a new user (Supabase)
+POST http://localhost:3001/api/v2/users/pg
+Content-Type: application/json
+
+{
+    "username": "Alice",
+    "role": "admin",
+    "email": "alice2@example.com",
+    "password": "password123"
+}
+
+### Update a user (Supabase) — replace the UUID with a real id from POST response
+PUT http://localhost:3001/api/v2/users/pg/9274afc7-817a-4981-bc89-ae429d556fd1
+Content-Type: application/json
+
+{
+    "username": "Alice",
+    "role": "user"
+}
+
+### Delete a user (Supabase) — replace the UUID with a real id from POST response
+DELETE http://localhost:3001/api/v2/users/pg/5a37de72-f3e8-4b27-af7c-71e583392e22
