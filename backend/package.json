@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.5"
   }
 }

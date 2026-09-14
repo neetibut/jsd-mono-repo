@@ -9,19 +9,20 @@ Content-Type: application/json
 
 {
     "username": "Neeti",
+    "role": "admin",
     "email": "neeti2@example.com",
     "password": "pass123"
 }
 
 ### Update a user
-PUT {{baseUrl}}/users/6a9e1dd5d795a29826a5a5c8
+PUT {{baseUrl}}/users/6aa219957ccbc07e4b4188b0
 Content-Type: application/json
 
 {
     "username": "Neeti2",
-    "email": "neeti@example.com",
+    "email": "neeti2@example.com",
     "password": "pass1234"
 }
 
 ### Delete a user
-DELETE {{baseUrl}}/users/6a9e1dd5d795a29826a5a5c8
+DELETE {{baseUrl}}/users/6a9e606cc8de812e54c18b0f

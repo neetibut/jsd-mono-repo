@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { User } from "../../models/user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { authUser } from "../../middlewares/authUser.js";
 
 export const router = Router();
 
@@ -18,15 +21,15 @@ router.get("/", async (req, res, next) => {
 // Create user
 router.post("/", async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, role, email, password } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !role || !email || !password) {
       return res
         .status(400)
         .json({ error: "username, email and password are required." });
     }
 
-    const newUser = await User.create({ username, email, password });
+    const newUser = await User.create({ username, role, email, password });
 
     const { password: _password, ...userWithoutPassword } = newUser.toObject();
 
@@ -75,5 +78,106 @@ router.delete("/:id", async (req, res, next) => {
     return res.json(deletedUser);
   } catch (err) {
     next(err);
+  }
+});
+
+// Login user
+
+router.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and Password are required!" });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found!" });
+    }
+
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect password!" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful!",
+      user: {
+        _id: user._id,
+        username: user.username,
+        role: user.role,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Logout a user
+router.post("/logout", (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: isProd, // only send over HTTPS in production
+    sameSite: isProd ? "none" : "lax",
+    path: "/",
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully!",
+  });
+});
+
+// Check user session/token
+router.get("/auth", authUser, async (req, res, next) => {
+  try {
+    const userId = req.user.user._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
 });

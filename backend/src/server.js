@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 // import { users } from "./fakeDB/fakeUsers.js";
 import { router as apiRoutes } from "./routes/index.js";
 import { connectDB } from "./config/db.js";
@@ -7,6 +8,7 @@ import { connectSupabase } from "./config/supabase.js";
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // CRUD routes and endpoints
 
