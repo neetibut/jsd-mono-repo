@@ -13,6 +13,20 @@ const userSchema = new mongoose.Schema(
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"],
     },
     password: { type: String, select: false },
+    position: { type: String, trim: true, maxlength: 60, default: "" },
+    embedding: {
+      status: {
+        type: String,
+        enum: ["PENDING", "PROCESSING", "READY", "FAILED"],
+        default: "PENDING",
+      },
+      dims: { type: Number, default: 3072 },
+      vector: { type: [Number] },
+      attempts: { type: Number, default: 0 },
+      lastAttemptAt: { type: Date, default: null },
+      updatedAt: { type: Date, default: null },
+      lastError: { type: String, default: null },
+    },
   },
   { timestamps: true },
 );

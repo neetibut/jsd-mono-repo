@@ -6,7 +6,8 @@ export function UserTable({ users }) {
           <tr className="bg-gray-200">
             <th className="border rounded-tl-lg p-2">Username</th>
             <th className="border p-2">Email</th>
-            <th className="border p-2 rounded-tr-lg">Role</th>
+            <th className="border p-2">Role</th>
+            <th className="border p-2 rounded-tr-lg">Position</th>
           </tr>
         </thead>
         <tbody>
@@ -15,6 +16,7 @@ export function UserTable({ users }) {
               <td className="border p-2">{user.username}</td>
               <td className="border p-2">{user.email}</td>
               <td className="border p-2">{user.role}</td>
+              <td className="border p-2">{user.position}</td>
             </tr>
           ))}
         </tbody>
